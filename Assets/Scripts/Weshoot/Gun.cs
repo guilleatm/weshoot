@@ -35,8 +35,6 @@ namespace Weshoot
 
 			if (!availableBullet) return;
 
-			Debug.Log("set data");
-
 			_bullet.transform.position = transform.position;
 			_bullet.transform.rotation = transform.rotation;
 			_bullet.speed = data.speed;

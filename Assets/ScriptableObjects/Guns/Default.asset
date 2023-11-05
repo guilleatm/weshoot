@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7732b5e12e40e280889feb868940f540, type: 3}
   m_Name: Default
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 8
   bullet: {fileID: 3693104512880712303, guid: d83bc7a8057fa4b3798a41833fd2f9d8, type: 3}
-  maxBullets: 5
-  maxBounces: 2
+  maxBullets: 100
+  maxBounces: 100
