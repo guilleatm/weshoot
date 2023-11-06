@@ -10,6 +10,7 @@ namespace Weshoot
 	public class Gun : MonoBehaviour
 	{
 		[SerializeField] GunData data;
+		float lastShotTime = 0f;
 
 		Pool<Bullet> availableBullets;
 
@@ -29,7 +30,26 @@ namespace Weshoot
 			Player.input.Action.Shoot.performed -= Shoot;
 		}
 
-		void Shoot(InputAction.CallbackContext context)
+		void Update()
+		{
+			ManageShootAuto();
+		}
+
+		void ManageShootAuto()
+		{
+			bool shootAuto = Player.input.Action.ShootAuto.IsPressed();
+			if (shootAuto)
+			{
+				Debug.Log("triggered");
+				if (Time.time - lastShotTime > data.cadenceDelay)
+				{
+					Shoot();
+					lastShotTime = Time.time;
+				}
+			}
+		}
+		void Shoot(InputAction.CallbackContext context) => Shoot();
+		void Shoot()
 		{
 			bool availableBullet = availableBullets.Get(out Bullet _bullet, enable: false);
 
@@ -37,13 +57,12 @@ namespace Weshoot
 
 			_bullet.transform.position = transform.position;
 			_bullet.transform.rotation = transform.rotation;
-			_bullet.speed = data.speed;
+			_bullet.speed = data.bulletSpeed;
 			_bullet.remainigBounces = data.maxBounces;
 
 			_bullet.gameObject.SetActive(true);
 			
 			_bullet.onDestroyed.AddListener(OnBulletDestroyed);
-
 		}
 
 		Bullet CreateBullet()

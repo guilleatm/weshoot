@@ -64,6 +64,15 @@ namespace Weshoot.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShootAuto"",
+                    ""type"": ""Button"",
+                    ""id"": ""529ed142-7278-4faf-b9a6-d6cbbc982621"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -154,6 +163,17 @@ namespace Weshoot.Input
                     ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e6e036d-5d4f-447c-b79f-2e3855e2e537"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""ShootAuto"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -183,6 +203,7 @@ namespace Weshoot.Input
             m_Action_Rotate = m_Action.FindAction("Rotate", throwIfNotFound: true);
             m_Action_Move = m_Action.FindAction("Move", throwIfNotFound: true);
             m_Action_Escape = m_Action.FindAction("Escape", throwIfNotFound: true);
+            m_Action_ShootAuto = m_Action.FindAction("ShootAuto", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -248,6 +269,7 @@ namespace Weshoot.Input
         private readonly InputAction m_Action_Rotate;
         private readonly InputAction m_Action_Move;
         private readonly InputAction m_Action_Escape;
+        private readonly InputAction m_Action_ShootAuto;
         public struct ActionActions
         {
             private @DefaultInput m_Wrapper;
@@ -256,6 +278,7 @@ namespace Weshoot.Input
             public InputAction @Rotate => m_Wrapper.m_Action_Rotate;
             public InputAction @Move => m_Wrapper.m_Action_Move;
             public InputAction @Escape => m_Wrapper.m_Action_Escape;
+            public InputAction @ShootAuto => m_Wrapper.m_Action_ShootAuto;
             public InputActionMap Get() { return m_Wrapper.m_Action; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -277,6 +300,9 @@ namespace Weshoot.Input
                 @Escape.started += instance.OnEscape;
                 @Escape.performed += instance.OnEscape;
                 @Escape.canceled += instance.OnEscape;
+                @ShootAuto.started += instance.OnShootAuto;
+                @ShootAuto.performed += instance.OnShootAuto;
+                @ShootAuto.canceled += instance.OnShootAuto;
             }
 
             private void UnregisterCallbacks(IActionActions instance)
@@ -293,6 +319,9 @@ namespace Weshoot.Input
                 @Escape.started -= instance.OnEscape;
                 @Escape.performed -= instance.OnEscape;
                 @Escape.canceled -= instance.OnEscape;
+                @ShootAuto.started -= instance.OnShootAuto;
+                @ShootAuto.performed -= instance.OnShootAuto;
+                @ShootAuto.canceled -= instance.OnShootAuto;
             }
 
             public void RemoveCallbacks(IActionActions instance)
@@ -325,6 +354,7 @@ namespace Weshoot.Input
             void OnRotate(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
             void OnEscape(InputAction.CallbackContext context);
+            void OnShootAuto(InputAction.CallbackContext context);
         }
     }
 }
