@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,7 +11,7 @@ namespace Weshoot
 {
 
 	// First in execution order
-	public class Player : MonoBehaviour
+	public class Player : NetworkBehaviour
 	{
 		public static DefaultInput input;
 		[SerializeField] PlayerControllerSettings controllerSettings;

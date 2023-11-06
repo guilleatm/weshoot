@@ -11,7 +11,6 @@ namespace Weshoot
 	{
 		[SerializeField] GunData data;
 		float lastShotTime = 0f;
-
 		Pool<Bullet> availableBullets;
 
 		void Start()

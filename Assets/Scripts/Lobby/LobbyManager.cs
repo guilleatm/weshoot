@@ -43,8 +43,11 @@ public class LobbyManager : MonoBehaviour
 	{
 		NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
 
-		const string SCENE = "Main";
-		SceneManager.LoadScene(SCENE);
+		const string SCENE = "Lobby";
+
+		NetworkManager.Singleton.SceneManager.LoadScene(SCENE, LoadSceneMode.Single);
+
+		// SceneManager.LoadScene(SCENE);
 	}
 
 }
