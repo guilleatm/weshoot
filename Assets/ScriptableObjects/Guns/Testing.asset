@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7732b5e12e40e280889feb868940f540, type: 3}
-  m_Name: Default
+  m_Name: Testing
   m_EditorClassIdentifier: 
   cadenceDelay: 0.2
   bulletSpeed: 20
   bullet: {fileID: 3693104512880712303, guid: d83bc7a8057fa4b3798a41833fd2f9d8, type: 3}
-  maxBullets: 5
+  maxBullets: 10
   maxBounces: 2

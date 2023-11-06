@@ -38,17 +38,19 @@ namespace Weshoot
 		void ManageShootAuto()
 		{
 			bool shootAuto = Player.input.Action.ShootAuto.IsPressed();
-			if (shootAuto)
+			if (shootAuto && Time.time - lastShotTime > data.cadenceDelay)
 			{
-				Debug.Log("triggered");
-				if (Time.time - lastShotTime > data.cadenceDelay)
-				{
-					Shoot();
-					lastShotTime = Time.time;
-				}
+				Shoot();
 			}
 		}
-		void Shoot(InputAction.CallbackContext context) => Shoot();
+		void Shoot(InputAction.CallbackContext context) 
+		{
+			if (Time.time - lastShotTime > data.cadenceDelay)
+			{
+				Shoot();
+			}
+		}
+
 		void Shoot()
 		{
 			bool availableBullet = availableBullets.Get(out Bullet _bullet, enable: false);
@@ -63,6 +65,8 @@ namespace Weshoot
 			_bullet.gameObject.SetActive(true);
 			
 			_bullet.onDestroyed.AddListener(OnBulletDestroyed);
+		
+			lastShotTime = Time.time;
 		}
 
 		Bullet CreateBullet()
