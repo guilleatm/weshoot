@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Weshoot
 {
-	public class Bullet : MonoBehaviour
+	public class Bullet : NetworkBehaviour
 	{
 		public UnityEvent<Bullet> onDestroyed { get; private set; } = new UnityEvent<Bullet>();
 		public float speed { get; set; }
