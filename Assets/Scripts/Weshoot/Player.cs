@@ -17,8 +17,11 @@ namespace Weshoot
 		public static DefaultInput input;
 		[SerializeField] PlayerControllerSettings controllerSettings;
 		[SerializeField] GameObject attachements;
-		bool networkSpawned = false;
-		Rigidbody rb;
+
+		void Awake()
+		{
+			Player.input = new DefaultInput();
+		}
 
 		public override void OnNetworkSpawn()
 		{
@@ -28,33 +31,21 @@ namespace Weshoot
 				return;
 			}
 
-			networkSpawned = true;
-
-			Player.input = new DefaultInput();
 			Player.input.Action.Enable();
 
 			Instantiate(attachements, transform);
 
 			SwitchCursorMode();
-
-			OnEnable();
 		}
 
 		void OnEnable()
 		{
-			if (!networkSpawned) return;
 			Player.input.Action.Escape.performed += OnEscape;
 		}
 
 		void OnDisable()
 		{
-			if (!networkSpawned) return;
 			Player.input.Action.Escape.performed -= OnEscape;
-		}
-
-		void Start()
-		{
-			rb = GetComponent<Rigidbody>();
 		}
 
 		void Update()
