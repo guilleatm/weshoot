@@ -12,13 +12,16 @@ public class LobbyManager : MonoBehaviour
 
 	void Start()
 	{
-		NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+		//NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
 	}
 
 	public void CreateServer()
 	{
 		NetworkManager.Singleton.StartHost();
 		UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+	
+		const string SCENE = "Lobby";
+		NetworkManager.Singleton.SceneManager.LoadScene(SCENE, LoadSceneMode.Single);
 	}
 
 	public void JoinServer(TextMeshProUGUI text)
@@ -39,15 +42,16 @@ public class LobbyManager : MonoBehaviour
 	}
 
 
-	private void OnClientConnected(ulong obj)
-	{
-		NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+	// private void OnClientConnected(ulong obj)
+	// {
+	// 	NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
 
-		const string SCENE = "Lobby";
+	// 	const string SCENE = "Lobby";
 
-		NetworkManager.Singleton.SceneManager.LoadScene(SCENE, LoadSceneMode.Single);
-
-		// SceneManager.LoadScene(SCENE);
-	}
+	// 	if (NetworkManager.Singleton.IsServer)
+	// 	{
+	// 		NetworkManager.Singleton.SceneManager.LoadScene(SCENE, LoadSceneMode.Single);
+	// 	}
+	// }
 
 }

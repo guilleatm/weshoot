@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,23 +16,39 @@ namespace Weshoot
 	{
 		public static DefaultInput input;
 		[SerializeField] PlayerControllerSettings controllerSettings;
+		[SerializeField] GameObject attachements;
+		bool networkSpawned = false;
 		Rigidbody rb;
 
-		void Awake()
+		public override void OnNetworkSpawn()
 		{
+			if (!IsLocalPlayer)
+			{
+				Destroy(this);
+				return;
+			}
+
+			networkSpawned = true;
+
 			Player.input = new DefaultInput();
 			Player.input.Action.Enable();
 
+			Instantiate(attachements, transform);
+
 			SwitchCursorMode();
+
+			OnEnable();
 		}
 
 		void OnEnable()
 		{
+			if (!networkSpawned) return;
 			Player.input.Action.Escape.performed += OnEscape;
 		}
 
 		void OnDisable()
 		{
+			if (!networkSpawned) return;
 			Player.input.Action.Escape.performed -= OnEscape;
 		}
 
@@ -65,6 +82,10 @@ namespace Weshoot
 		void OnEscape(InputAction.CallbackContext context) => SwitchCursorMode();
 		void SwitchCursorMode()
 		{
+
+#if DEBUG
+	Debug.Log("Debug mode - No mouse lock");
+#else
 			switch(Cursor.lockState)
 			{
 				case CursorLockMode.None:
@@ -77,6 +98,7 @@ namespace Weshoot
 					Cursor.visible = true;
 					break;
 			}
+#endif
 		}
 	}
 

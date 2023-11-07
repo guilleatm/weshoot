@@ -54,6 +54,7 @@ MonoBehaviour:
   controllerSettings:
     speed: 18
     viewSensitivity: {x: 0.08, y: 0.08}
+  attachements: {fileID: 8050685391051166772, guid: 82e50e64370868673bf8116ae4ea935b, type: 3}
 --- !u!114 &605190121639413986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +70,7 @@ MonoBehaviour:
   GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 0
-  ActiveSceneSynchronization: 0
+  ActiveSceneSynchronization: 1
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
