@@ -15,7 +15,8 @@ namespace Weshoot
 		
 		public override void OnNetworkSpawn()
 		{
-			// enabled = IsServer;
+			enabled = IsServer;
+			gameObject.SetActive(true);
 		}
 
 		void Update()
@@ -50,6 +51,11 @@ namespace Weshoot
 			}
 
 			return Vector3.Reflect(direction.normalized, _normal.normalized);
+		}
+
+		public override void OnNetworkDespawn()
+		{
+			gameObject.SetActive(false);
 		}
 
 	}

@@ -14,9 +14,38 @@ namespace Weshoot
 		[SerializeField] GunData data;
 		float lastShotTime = 0f;
 
+		ObjectPool<Bullet> bulletPool_Server;
+
 		public override void OnNetworkSpawn()
 		{
+			if (IsServer)
+			{
+				CreateBulletPool_Server();
+			}
+
 			enabled = IsLocalPlayer;
+		}
+
+		void CreateBulletPool_Server()
+		{
+
+			Bullet CreateBullet()
+			{
+				return Instantiate(data.bullet);
+			}
+
+			void OnGet(Bullet bullet)
+			{
+				bullet.gameObject.SetActive(true);
+				bullet.NetworkObject.Spawn();
+			}
+
+			void OnRelease(Bullet bullet)
+			{
+				bullet.NetworkObject.Despawn(destroy: false);
+			}
+
+			bulletPool_Server = new ObjectPool<Bullet>(createFunc: CreateBullet, actionOnGet: OnGet, actionOnRelease: OnRelease);
 		}
 
 		void OnEnable()
@@ -55,11 +84,10 @@ namespace Weshoot
 		[ServerRpc]
 		void Shoot_ServerRpc()
 		{
-			Bullet _bullet = Instantiate(data.bullet, transform.position, transform.rotation);
-			_bullet.NetworkObject.Spawn();
+			Bullet _bullet = bulletPool_Server.Get();
 
-			// _bullet.transform.position = transform.position;
-			// _bullet.transform.rotation = transform.rotation;
+			_bullet.transform.position = transform.position;
+			_bullet.transform.rotation = transform.rotation;
 			_bullet.direction = transform.forward;
 			
 			_bullet.speed = data.bulletSpeed;
@@ -71,7 +99,7 @@ namespace Weshoot
 		void OnBulletDestroyed_Server(Bullet bullet)
 		{
 			bullet.onDestroyed.RemoveListener(OnBulletDestroyed_Server);
-			bullet.NetworkObject.Despawn(destroy: true);
+			bulletPool_Server.Release(bullet);
 		}
 	}
 }
