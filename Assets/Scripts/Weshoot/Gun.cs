@@ -26,28 +26,6 @@ namespace Weshoot
 			enabled = IsLocalPlayer;
 		}
 
-		void CreateBulletPool_Server()
-		{
-
-			Bullet CreateBullet()
-			{
-				return Instantiate(data.bullet);
-			}
-
-			void OnGet(Bullet bullet)
-			{
-				bullet.gameObject.SetActive(true);
-				bullet.NetworkObject.Spawn();
-			}
-
-			void OnRelease(Bullet bullet)
-			{
-				bullet.NetworkObject.Despawn(destroy: false);
-			}
-
-			bulletPool_Server = new ObjectPool<Bullet>(createFunc: CreateBullet, actionOnGet: OnGet, actionOnRelease: OnRelease);
-		}
-
 		void OnEnable()
 		{
 			InputHolder.instance.Action.Shoot.performed += Shoot;
@@ -100,6 +78,39 @@ namespace Weshoot
 		{
 			bullet.onDestroyed.RemoveListener(OnBulletDestroyed_Server);
 			bulletPool_Server.Release(bullet);
+		}
+
+		void CreateBulletPool_Server()
+		{
+			Bullet CreateBullet()
+			{
+				return Instantiate(data.bullet);
+			}
+
+			void OnGet(Bullet bullet)
+			{
+				bullet.gameObject.SetActive(true);
+				bullet.NetworkObject.Spawn();
+			}
+
+			void OnRelease(Bullet bullet)
+			{
+				bullet.NetworkObject.Despawn(destroy: false);
+			}
+
+			void OnDestroy(Bullet bullet)
+			{
+				bullet.NetworkObject.Despawn(destroy: true);
+			}
+
+			bulletPool_Server = new ObjectPool<Bullet>(
+				createFunc: CreateBullet,
+				actionOnGet: OnGet,
+				actionOnRelease: OnRelease,
+				actionOnDestroy: OnDestroy,
+				defaultCapacity: 20,
+				maxSize: 10000
+			);
 		}
 	}
 }
