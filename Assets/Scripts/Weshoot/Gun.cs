@@ -13,13 +13,9 @@ namespace Weshoot
 	{
 		[SerializeField] GunData data;
 		float lastShotTime = 0f;
-		//NetworkedPool availableBullets;
 
 		public override void OnNetworkSpawn()
 		{
-			// availableBullets = new NetworkedPool(data.maxBullets);
-			// availableBullets.Fill(CreateBullet_ServerRpc);
-
 			enabled = IsLocalPlayer;
 		}
 
@@ -44,6 +40,7 @@ namespace Weshoot
 			if (shootAuto && Time.time - lastShotTime > data.cadenceDelay)
 			{
 				Shoot_ServerRpc();
+				lastShotTime = Time.time;
 			}
 		}
 		void Shoot(InputAction.CallbackContext context) 
@@ -51,6 +48,7 @@ namespace Weshoot
 			if (Time.time - lastShotTime > data.cadenceDelay)
 			{
 				Shoot_ServerRpc();
+				lastShotTime = Time.time;
 			}
 		}
 
@@ -60,125 +58,20 @@ namespace Weshoot
 			Bullet _bullet = Instantiate(data.bullet, transform.position, transform.rotation);
 			_bullet.NetworkObject.Spawn();
 
-			// bool availableBullet = availableBullets.Get(out NetworkObject _bulletNetObj, enable: false);
-
-			// if (!availableBullet) return;
-
-			// Bullet _bullet = _bulletNetObj.GetComponent<Bullet>();
-
 			// _bullet.transform.position = transform.position;
 			// _bullet.transform.rotation = transform.rotation;
-			// _bullet.speed = data.bulletSpeed;
-			// _bullet.remainigBounces = data.maxBounces;
-
-			// _bullet.gameObject.SetActive(true);
+			_bullet.direction = transform.forward;
 			
-			// _bullet.onDestroyed.AddListener(OnBulletDestroyed);
-		
-			// lastShotTime = Time.time;
+			_bullet.speed = data.bulletSpeed;
+			_bullet.remainigBounces = data.maxBounces;
+
+			_bullet.onDestroyed.AddListener(OnBulletDestroyed_Server);
 		}
 
-		// [ServerRpc]
-		// void CreateBullet_ServerRpc()
-		// {
-		// 	NetworkObject _bullet = Instantiate<NetworkObject>(data.bullet, transform.position, transform.rotation);
-		// 	_bullet.Spawn(destroyWithScene: true);
-		// 	return _bullet;
-		// }
-
-		// void OnBulletDestroyed(Bullet bullet)
-		// {
-		// 	bullet.onDestroyed.RemoveListener(OnBulletDestroyed);
-		// 	availableBullets.Store(bullet.GetComponent<NetworkObject>());
-		// }
+		void OnBulletDestroyed_Server(Bullet bullet)
+		{
+			bullet.onDestroyed.RemoveListener(OnBulletDestroyed_Server);
+			bullet.NetworkObject.Despawn(destroy: true);
+		}
 	}
-
-	// class NetworkedPool
-	// {
-	// 	int size;
-	// 	Stack<NetworkObject> available = new Stack<NetworkObject>();
-
-	// 	public NetworkedPool(int size)
-	// 	{
-	// 		this.size = size;
-	// 	}
-
-	// 	public bool Get(out NetworkObject element, bool enable = true)
-	// 	{
-	// 		bool availableObject = available.Count > 0;
-	// 		if (availableObject)
-	// 		{
-	// 			element = available.Pop();
-
-	// 			if (enable)
-	// 			{
-	// 				element.Spawn();
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			element = null;
-	// 		}
-	// 		return availableObject;
-	// 	}
-
-	// 	public void Store(NetworkObject element, bool disable = true)
-	// 	{
-	// 		if (disable)
-	// 		{
-	// 			element.Despawn(destroy: false);
-	// 		}
-	// 		available.Push(element);
-	// 	}
-
-	// 	public void Fill(Func<NetworkObject> createElement, bool disable = true)
-	// 	{
-	// 		for (int i = available.Count; i < size; i++)
-	// 		{
-	// 			NetworkObject element = createElement.Invoke();
-	// 			Store(element, disable);
-	// 		}
-	// 	}
-	// }
-
-	// class Pool<T> where T : MonoBehaviour
-	// {
-	// 	int size;
-	// 	Stack<T> available = new Stack<T>();
-
-	// 	public Pool(int size)
-	// 	{
-	// 		this.size = size;
-	// 	}
-
-	// 	public bool Get(out T element, bool enable = true)
-	// 	{
-	// 		bool availableObject = available.Count > 0;
-	// 		if (availableObject)
-	// 		{
-	// 			element = available.Pop();
-	// 			element.gameObject.SetActive(enable);
-	// 		}
-	// 		else
-	// 		{
-	// 			element = null;
-	// 		}
-	// 		return availableObject;
-	// 	}
-
-	// 	public void Store(T element, bool disable = true)
-	// 	{
-	// 		element.gameObject.SetActive(!disable);
-	// 		available.Push(element);
-	// 	}
-
-	// 	public void Fill(Func<T> createElement, bool disable = true)
-	// 	{
-	// 		for (int i = available.Count; i < size; i++)
-	// 		{
-	// 			T element = createElement.Invoke();
-	// 			Store(element, disable);
-	// 		}
-	// 	}
-	// }
 }

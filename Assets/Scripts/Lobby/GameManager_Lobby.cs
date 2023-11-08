@@ -12,13 +12,12 @@ public class GameManager_Lobby : NetworkBehaviour
 	{
 		if (IsServer)
 		{
-			OnClientConnected(NetworkManager.Singleton.LocalClientId); // Host
-			NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected; // Other clients
+			OnClientConnected_Server(NetworkManager.Singleton.LocalClientId); // Host
+			NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected_Server; // Other clients
 		}
 	}
 
-	// Server
-	void OnClientConnected(ulong clientID)
+	void OnClientConnected_Server(ulong clientID)
 	{
 		NetworkObject player = Instantiate<NetworkObject>(lobbyPlayerSettings.playerPrefab);
 		player.SpawnAsPlayerObject(clientID, destroyWithScene: true);

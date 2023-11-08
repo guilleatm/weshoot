@@ -11,22 +11,20 @@ namespace Weshoot
 		public UnityEvent<Bullet> onDestroyed { get; private set; } = new UnityEvent<Bullet>();
 		public float speed { get; set; }
 		public float remainigBounces { get; set; }
-		Vector3 direction;
+		public Vector3 direction { get; set; }
 		
-		Rigidbody rb;
-		void Start()
+		public override void OnNetworkSpawn()
 		{
-			rb = GetComponent<Rigidbody>();
-		}
-
-		void OnEnable()
-		{
-			direction = transform.forward;
+			// enabled = IsServer;
 		}
 
 		void Update()
 		{
-			// rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
+			ManageMovement();
+		}
+
+		void ManageMovement()
+		{
 			transform.position += direction * speed * Time.deltaTime;
 		}
 
